@@ -1,4 +1,4 @@
-use std::ops;
+use std::{fmt::Display, ops};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Modint<const MOD: usize> {
@@ -8,6 +8,12 @@ pub struct Modint<const MOD: usize> {
 pub struct ModCalc<const MOD: usize> {
     fact: Vec<usize>,
     finv: Vec<usize>,
+}
+
+impl<const MOD: usize> Display for Modint<MOD> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        self.value.fmt(f)
+    }
 }
 
 impl<const MOD: usize> Modint<MOD> {
