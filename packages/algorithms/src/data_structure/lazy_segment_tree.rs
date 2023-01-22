@@ -279,5 +279,44 @@ mod tests {
                 }
             }
         }
+
+        describe "LazySegmentTree to get the sum of a segment" {
+            #[ignore]
+            #[rstest]
+            fn test_sum_of_get_segment() {
+                let mut lst = LazySegmentTree::new(
+                    16,
+                    || 0,
+                    || 0,
+                    |a, b| a + b,
+                    |a, b, k, level| {
+                        // dbg!("{}, {}", k, level);
+                        a + b * (1 << level)
+                    },
+                    |a, b| a + b,
+                );
+
+                lst.update(3, 12, 1); // data is [0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0]
+                assert_eq!(lst.get(0, 3), 0);
+                assert_eq!(lst.get(4, 5), 1);
+                assert_eq!(lst.get(8, 11), 3);
+
+                lst.update(1, 5, 3); // data is [0, 3, 3, 4, 4, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0]
+                assert_eq!(lst.get(0, 1), 0);
+                assert_eq!(lst.get(0, 2), 3);
+                assert_eq!(lst.get(0, 3), 6);
+                assert_eq!(lst.get(0, 4), 10);
+                assert_eq!(lst.get(4, 5), 4);
+                assert_eq!(lst.get(0, 3), 6);
+                assert_eq!(lst.get(4, 11), 10);
+
+                lst.update(9, 16, -3); // data is [0, 3, 3, 4, 4, 1, 1, 1, 1, -2, -2, -2, -3, -3, -3, -3]
+                assert_eq!(lst.get(0, 1), 0);
+                assert_eq!(lst.get(0, 2), 3);
+                assert_eq!(lst.get(0, 9), 18);
+                assert_eq!(lst.get(0, 10), 16);
+                assert_eq!(lst.get(7, 16), -16);
+            }
+        }
     }
 }
