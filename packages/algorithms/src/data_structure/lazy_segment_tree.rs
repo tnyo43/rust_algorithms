@@ -1,7 +1,9 @@
+use std::fmt::Display;
+
 pub struct LazySegmentTree<D, L, F, G, H, I, J>
 where
-    D: Clone + Copy,
-    L: Clone + Copy + PartialEq,
+    D: Clone + Copy + Display,
+    L: Clone + Copy + PartialEq + Display,
     F: Fn() -> D,
     G: Fn() -> L,
     H: Fn(D, D) -> D,
@@ -16,6 +18,48 @@ where
     op: H,
     mapping: I,
     composite: J,
+}
+
+fn print<T: Display>(
+    f: &mut std::fmt::Formatter<'_>,
+    data: &Vec<T>,
+    size: usize,
+) -> std::fmt::Result {
+    for (i, v) in data.iter().enumerate() {
+        let n = 1 << ((i + 1).leading_zeros() - size.leading_zeros());
+
+        for _ in 0..(n / 2) {
+            write!(f, "\t")?;
+        }
+        write!(f, "{}", v)?;
+        for _ in 0..((n + 1) / 2) {
+            write!(f, "\t")?;
+        }
+
+        if (i + 2).count_ones() == 1 {
+            write!(f, "\n")?;
+        }
+    }
+    write!(f, "")
+}
+
+impl<D, L, F, G, H, I, J> Display for LazySegmentTree<D, L, F, G, H, I, J>
+where
+    D: Clone + Copy + Display,
+    L: Clone + Copy + PartialEq + Display,
+    F: Fn() -> D,
+    G: Fn() -> L,
+    H: Fn(D, D) -> D,
+    I: Fn(D, L, usize, u32) -> D,
+    J: Fn(L, L) -> L,
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "[[data]]\n")?;
+        print(f, &self.data, self.size)?;
+        write!(f, "\n[[lazy]]\n")?;
+        print(f, &self.lazy, self.size)?;
+        write!(f, "")
+    }
 }
 
 impl<D, L, F, G, H, I, J> LazySegmentTree<D, L, F, G, H, I, J>
