@@ -1,42 +1,82 @@
-struct LazySegmentTree {
+pub struct LazySegmentTree<D, L, F, G, H, I, J>
+where
+    D: Clone + Copy,
+    L: Clone + Copy + PartialEq,
+    F: Fn() -> D,
+    G: Fn() -> L,
+    H: Fn(D, D) -> D,
+    I: Fn(D, L) -> D,
+    J: Fn(L, L) -> L,
+{
     size: usize,
-    data: Vec<i32>,
-    lazy: Vec<i32>,
+    data: Vec<D>,
+    lazy: Vec<L>,
+    zero_data: F,
+    zero_lazy: G,
+    op: H,
+    mapping: I,
+    composite: J,
 }
 
-impl LazySegmentTree {
-    pub fn new(size: usize) -> Self {
+impl<D, L, F, G, H, I, J> LazySegmentTree<D, L, F, G, H, I, J>
+where
+    D: Clone + Copy,
+    L: Clone + Copy + PartialEq,
+    F: Fn() -> D,
+    G: Fn() -> L,
+    H: Fn(D, D) -> D,
+    I: Fn(D, L) -> D,
+    J: Fn(L, L) -> L,
+{
+    pub fn new(size: usize, zero_data: F, zero_lazy: G, op: H, mapping: I, composite: J) -> Self {
         let mut s = 1;
         while s < size {
             s *= 2;
         }
 
-        LazySegmentTree {
+        LazySegmentTree::<D, L, F, G, H, I, J> {
             size: s,
-            data: vec![i32::MAX; 2 * s - 1],
-            lazy: vec![i32::MAX; 2 * s - 1],
+            data: vec![zero_data(); 2 * s - 1],
+            lazy: vec![zero_lazy(); 2 * s - 1],
+            zero_data,
+            zero_lazy,
+            op,
+            mapping,
+            composite,
         }
     }
 
-    pub fn from(data: &Vec<i32>) -> Self {
+    pub fn from(
+        data: &Vec<D>,
+        zero_data: F,
+        zero_lazy: G,
+        op: H,
+        mapping: I,
+        composite: J,
+    ) -> Self {
         let mut s = 1;
         while s < data.len() {
             s *= 2;
         }
 
-        let mut d = vec![i32::MAX; 2 * s - 1];
+        let mut d = vec![zero_data(); 2 * s - 1];
 
         for (i, x) in data.iter().enumerate() {
-            d[s - 1 + i] = *x;
+            d[s - 1 + i] = x.clone();
         }
         for i in (0..s - 1).rev() {
-            d[i] = i32::min(d[i * 2 + 1], d[i * 2 + 2]);
+            d[i] = op(d[i * 2 + 1], d[i * 2 + 2]);
         }
 
-        LazySegmentTree {
+        LazySegmentTree::<D, L, F, G, H, I, J> {
             size: s,
             data: d,
-            lazy: vec![i32::MAX; 2 * s - 1],
+            lazy: vec![zero_lazy(); 2 * s - 1],
+            zero_data,
+            zero_lazy,
+            op,
+            mapping,
+            composite,
         }
     }
 
@@ -45,20 +85,20 @@ impl LazySegmentTree {
     }
 
     pub fn eval(&mut self, k: usize) {
-        if self.lazy[k] == i32::MAX {
+        if self.lazy[k] == (self.zero_lazy)() {
             return;
         }
 
-        self.data[k] = i32::min(self.data[k], self.lazy[k]);
+        self.data[k] = (self.mapping)(self.data[k], self.lazy[k]);
         if !self.is_bottom(k) {
-            self.lazy[2 * k + 1] = i32::min(self.lazy[2 * k + 1], self.lazy[k]);
-            self.lazy[2 * k + 2] = i32::min(self.lazy[2 * k + 2], self.lazy[k]);
+            self.lazy[2 * k + 1] = (self.composite)(self.lazy[2 * k + 1], self.lazy[k]);
+            self.lazy[2 * k + 2] = (self.composite)(self.lazy[2 * k + 2], self.lazy[k]);
         }
 
-        self.lazy[k] = i32::MAX;
+        self.lazy[k] = (self.zero_lazy)();
     }
 
-    fn update_sub(&mut self, a: usize, b: usize, value: i32, k: usize, left: usize, right: usize) {
+    fn update_sub(&mut self, a: usize, b: usize, value: L, k: usize, left: usize, right: usize) {
         self.eval(k);
 
         if b <= left || right <= a {
@@ -66,7 +106,7 @@ impl LazySegmentTree {
         }
 
         if a <= left && right <= b {
-            self.lazy[k] = i32::min(self.lazy[k], value);
+            self.lazy[k] = (self.composite)(self.lazy[k], value);
             self.eval(k);
             return;
         }
@@ -74,16 +114,16 @@ impl LazySegmentTree {
         let mid = (left + right) / 2;
         self.update_sub(a, b, value, 2 * k + 1, left, mid);
         self.update_sub(a, b, value, 2 * k + 2, mid, right);
-        self.data[k] = i32::min(self.data[2 * k + 1], self.data[2 * k + 2]);
+        self.data[k] = (self.op)(self.data[2 * k + 1], self.data[2 * k + 2]);
     }
 
-    pub fn update(&mut self, left: usize, right: usize, value: i32) {
+    pub fn update(&mut self, left: usize, right: usize, value: L) {
         self.update_sub(left, right, value, 0, 0, self.size);
     }
 
-    fn get_sub(&mut self, a: usize, b: usize, k: usize, left: usize, right: usize) -> i32 {
+    fn get_sub(&mut self, a: usize, b: usize, k: usize, left: usize, right: usize) -> D {
         if right <= a || b <= left {
-            return i32::MAX;
+            return (self.zero_data)();
         }
 
         self.eval(k);
@@ -96,10 +136,10 @@ impl LazySegmentTree {
         let result_left = self.get_sub(a, b, 2 * k + 1, left, mid);
         let result_right = self.get_sub(a, b, 2 * k + 2, mid, right);
 
-        i32::min(result_left, result_right)
+        (self.op)(result_left, result_right)
     }
 
-    pub fn get(&mut self, left: usize, right: usize) -> i32 {
+    pub fn get(&mut self, left: usize, right: usize) -> D {
         self.get_sub(left, right, 0, 0, self.size)
     }
 }
@@ -119,7 +159,14 @@ mod tests {
             describe "initialize" {
                 #[rstest]
                 fn test_initialize_with_new() {
-                    let lst = LazySegmentTree::new(10);
+                    let lst = LazySegmentTree::new(
+                        10,
+                        || { i32::MAX },
+                        || { i32::MAX },
+                        i32::min,
+                        i32::min,
+                        i32::min
+                    );
                     assert_eq!(lst.data.len(), 31);
 
                     for d in lst.data {
@@ -129,7 +176,14 @@ mod tests {
 
                 #[rstest]
                 fn test_initialize_with_from() {
-                    let lst = LazySegmentTree::from(&vec![1, 2, 3, 4, 5]);
+                    let lst = LazySegmentTree::from(
+                        &vec![1, 2, 3, 4, 5],
+                        || { i32::MAX },
+                        || { i32::MAX },
+                        i32::min,
+                        i32::min,
+                        i32::min
+                    );
                     assert_eq!(lst.data.len(), 15);
 
                     assert_eq!(lst.data, vec![
@@ -144,7 +198,14 @@ mod tests {
             describe "update values if the incoming value is smaller" {
                 #[rstest]
                 fn test_update() {
-                    let mut lst = LazySegmentTree::from(&vec![1, 2, 3, 4, 5, 6, 7, 8]);
+                    let mut lst = LazySegmentTree::from(
+                        &vec![1, 2, 3, 4, 5, 6, 7, 8],
+                        || { i32::MAX },
+                        || { i32::MAX },
+                        i32::min,
+                        i32::min,
+                        i32::min
+                    );
                     lst.update(3, 6, 2); // data is [1, 2, 3, 2, 2, 2, 7, 8]
 
                     assert_eq!(lst.get(0, 1), 1);
