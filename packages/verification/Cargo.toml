@@ -9,6 +9,15 @@ edition = "2021"
 proconio = "0.4.3"
 algorithms = { path = "../algorithms" }
 
+# data_structure/lazy_segment_tree
+
+[[bin]]
+name = "verification_data_structure_lazy_segment_tree_01"
+path = "src/data_structure/lazy_segment_tree/main_01.rs"
+
+[[bin]]
+name = "verification_data_structure_lazy_segment_tree_02"
+path = "src/data_structure/lazy_segment_tree/main_02.rs"
 
 # math/modint
 

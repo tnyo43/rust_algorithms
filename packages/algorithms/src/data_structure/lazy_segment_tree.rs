@@ -289,8 +289,7 @@ mod tests {
                     || 0,
                     || 0,
                     |a, b| a + b,
-                    |a, b, k, level| {
-                        // dbg!("{}, {}", k, level);
+                    |a, b, _, level| {
                         a + b * (1 << level)
                     },
                     |a, b| a + b,
