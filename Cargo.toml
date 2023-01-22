@@ -1,10 +1,2 @@
-[package]
-name = "algorithms"
-version = "0.1.0"
-edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
-[dev-dependencies]
-rstest = "0.16.0"
-speculate = "0.1.2"
+[workspace]
+members = ["packages/*",]
