@@ -1,0 +1,21 @@
+[package]
+name = "verification"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+proconio = "0.4.3"
+algorithms = { path = "../algorithms" }
+
+
+# math/modint
+
+[[bin]]
+name = "verification_math_modint_01"
+path = "src/math/modint/main_01.rs"
+
+[[bin]]
+name = "verification_math_modint_02"
+path = "src/math/modint/main_02.rs"
