@@ -7,7 +7,7 @@ where
     F: Fn() -> D,
     G: Fn() -> L,
     H: Fn(D, D) -> D,
-    I: Fn(D, L) -> D,
+    I: Fn(D, L, usize, u32) -> D,
     J: Fn(L, L) -> L,
 {
     size: usize,
@@ -64,12 +64,12 @@ where
 
 impl<D, L, F, G, H, I, J> LazySegmentTree<D, L, F, G, H, I, J>
 where
-    D: Clone + Copy,
-    L: Clone + Copy + PartialEq,
+    D: Clone + Copy + Display,
+    L: Clone + Copy + PartialEq + Display,
     F: Fn() -> D,
     G: Fn() -> L,
     H: Fn(D, D) -> D,
-    I: Fn(D, L) -> D,
+    I: Fn(D, L, usize, u32) -> D,
     J: Fn(L, L) -> L,
 {
     pub fn new(size: usize, zero_data: F, zero_lazy: G, op: H, mapping: I, composite: J) -> Self {
@@ -133,7 +133,12 @@ where
             return;
         }
 
-        self.data[k] = (self.mapping)(self.data[k], self.lazy[k]);
+        self.data[k] = (self.mapping)(
+            self.data[k],
+            self.lazy[k],
+            k,
+            k.leading_zeros() - self.size.leading_zeros(),
+        );
         if !self.is_bottom(k) {
             self.lazy[2 * k + 1] = (self.composite)(self.lazy[2 * k + 1], self.lazy[k]);
             self.lazy[2 * k + 2] = (self.composite)(self.lazy[2 * k + 2], self.lazy[k]);
@@ -208,7 +213,7 @@ mod tests {
                         || { i32::MAX },
                         || { i32::MAX },
                         i32::min,
-                        i32::min,
+                        |a, b, _, _| i32::min(a, b),
                         i32::min
                     );
                     assert_eq!(lst.data.len(), 31);
@@ -225,7 +230,7 @@ mod tests {
                         || { i32::MAX },
                         || { i32::MAX },
                         i32::min,
-                        i32::min,
+                        |a, b, _, _| i32::min(a, b),
                         i32::min
                     );
                     assert_eq!(lst.data.len(), 15);
@@ -247,7 +252,7 @@ mod tests {
                         || { i32::MAX },
                         || { i32::MAX },
                         i32::min,
-                        i32::min,
+                        |a, b, _, _| i32::min(a, b),
                         i32::min
                     );
                     lst.update(3, 6, 2); // data is [1, 2, 3, 2, 2, 2, 7, 8]
