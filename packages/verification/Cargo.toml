@@ -19,6 +19,16 @@ path = "src/data_structure/lazy_segment_tree/main_01.rs"
 name = "verification_data_structure_lazy_segment_tree_02"
 path = "src/data_structure/lazy_segment_tree/main_02.rs"
 
+# data_structure/union_find
+
+[[bin]]
+name = "verification_data_structure_union_find_01"
+path = "src/data_structure/union_find/main_01.rs"
+
+[[bin]]
+name = "verification_data_structure_union_find_02"
+path = "src/data_structure/union_find/main_02.rs"
+
 # math/modint
 
 [[bin]]
