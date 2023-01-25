@@ -1,9 +1,7 @@
 use std::{fmt::Display, ops};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct Modint<const MOD: usize> {
-    value: usize,
-}
+pub struct Modint<const MOD: usize>(usize);
 
 pub struct ModCalc<const MOD: usize> {
     fact: Vec<usize>,
@@ -12,18 +10,18 @@ pub struct ModCalc<const MOD: usize> {
 
 impl<const MOD: usize> Display for Modint<MOD> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        self.value.fmt(f)
+        self.0.fmt(f)
     }
 }
 
 impl<const MOD: usize> Modint<MOD> {
     pub fn new(value: usize) -> Self {
-        Self { value: value % MOD }
+        Self(value % MOD)
     }
 
     pub fn pow(self, index: usize) -> Self {
         let mut result = Self::new(1);
-        let mut temp = Self::new(self.value);
+        let mut temp = Self::new(self.0);
         let mut n = index;
 
         while n > 0 {
@@ -46,7 +44,7 @@ impl<const MOD: usize> ops::Add for Modint<MOD> {
     type Output = Self;
 
     fn add(self, rhs: Self) -> Self::Output {
-        Self::new((self.value + rhs.value) % MOD)
+        Self::new((self.0 + rhs.0) % MOD)
     }
 }
 
@@ -59,7 +57,7 @@ impl<const MOD: usize> ops::Sub for Modint<MOD> {
     type Output = Self;
 
     fn sub(self, rhs: Self) -> Self::Output {
-        Self::new((MOD + self.value - rhs.value) % MOD)
+        Self::new((MOD + self.0 - rhs.0) % MOD)
     }
 }
 
@@ -73,7 +71,7 @@ impl<const MOD: usize> ops::Mul for Modint<MOD> {
     type Output = Self;
 
     fn mul(self, rhs: Self) -> Self::Output {
-        Self::new(self.value * rhs.value % MOD)
+        Self::new(self.0 * rhs.0 % MOD)
     }
 }
 
@@ -87,7 +85,7 @@ impl<const MOD: usize> ops::Div for Modint<MOD> {
     type Output = Self;
 
     fn div(self, rhs: Self) -> Self::Output {
-        if rhs.value == 0 {
+        if rhs.0 == 0 {
             panic!("Zero Division Error.");
         }
 
@@ -97,7 +95,7 @@ impl<const MOD: usize> ops::Div for Modint<MOD> {
 
 impl<const MOD: usize> ops::DivAssign for Modint<MOD> {
     fn div_assign(&mut self, rhs: Self) {
-        if rhs.value == 0 {
+        if rhs.0 == 0 {
             panic!("Zero Division Error.");
         }
 
