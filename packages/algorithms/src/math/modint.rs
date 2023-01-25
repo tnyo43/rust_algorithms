@@ -52,7 +52,7 @@ impl<const MOD: usize> ops::Add for Modint<MOD> {
 
 impl<const MOD: usize> ops::AddAssign for Modint<MOD> {
     fn add_assign(&mut self, rhs: Self) {
-        *self = Self::new(self.value) + rhs;
+        *self = *self + rhs;
     }
 }
 impl<const MOD: usize> ops::Sub for Modint<MOD> {
@@ -65,7 +65,7 @@ impl<const MOD: usize> ops::Sub for Modint<MOD> {
 
 impl<const MOD: usize> ops::SubAssign for Modint<MOD> {
     fn sub_assign(&mut self, rhs: Self) {
-        *self = Self::new(self.value) - rhs
+        *self = *self - rhs
     }
 }
 
@@ -79,7 +79,7 @@ impl<const MOD: usize> ops::Mul for Modint<MOD> {
 
 impl<const MOD: usize> ops::MulAssign for Modint<MOD> {
     fn mul_assign(&mut self, rhs: Self) {
-        *self = Self::new(self.value) * rhs
+        *self = *self * rhs
     }
 }
 
@@ -101,7 +101,7 @@ impl<const MOD: usize> ops::DivAssign for Modint<MOD> {
             panic!("Zero Division Error.");
         }
 
-        *self = Self::new(self.value) / rhs.inv();
+        *self = *self / rhs;
     }
 }
 
