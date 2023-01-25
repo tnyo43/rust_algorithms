@@ -102,8 +102,8 @@ where
             return;
         }
 
-        self.data[k] =
-            self.data[k].act(self.lazy[k].p(k.leading_zeros() - self.size.leading_zeros()));
+        self.data[k] = self.data[k]
+            .act(self.lazy[k].p(1 << ((k + 1).leading_zeros() - self.size.leading_zeros())));
         if !self.is_bottom(k) {
             self.lazy[2 * k + 1] = self.lazy[2 * k + 1].op(self.lazy[k]);
             self.lazy[2 * k + 2] = self.lazy[2 * k + 2].op(self.lazy[k]);
@@ -291,7 +291,7 @@ mod tests {
 
             impl SegmentPropertation for SumNum {
                 fn p(&self, len: u32) -> Self {
-                    Self(self.0 << len)
+                    Self(self.0 * len as i32)
                 }
             }
 
