@@ -1,7 +1,7 @@
 pub struct Edge {
-    left: usize,
-    right: usize,
-    distance: usize,
+    pub left: usize,
+    pub right: usize,
+    pub distance: usize,
 }
 
 pub struct Adjacent {
