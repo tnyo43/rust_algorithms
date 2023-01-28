@@ -26,7 +26,7 @@ impl UndirectedGraph {
                 distance: e.distance,
             });
             adjacents[e.right].push(Adjacent {
-                node: e.right,
+                node: e.left,
                 distance: e.distance,
             });
         }
@@ -40,7 +40,7 @@ impl UndirectedGraph {
             distance: edge.distance,
         });
         self.adjacents[edge.right].push(Adjacent {
-            node: edge.right,
+            node: edge.left,
             distance: edge.distance,
         });
     }
