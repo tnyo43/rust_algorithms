@@ -1,24 +1,47 @@
+pub struct Edge {
+    left: usize,
+    right: usize,
+    distance: usize,
+}
+
+pub struct Adjacent {
+    pub node: usize,
+    pub distance: usize,
+}
+
 pub struct UndirectedGraph {
-    adjacents: Vec<Vec<usize>>,
+    pub adjacents: Vec<Vec<Adjacent>>,
 }
 
 impl UndirectedGraph {
-    pub fn new(nodes: usize, edges: &Vec<(usize, usize)>) -> Self {
+    pub fn new(nodes: usize, edges: &Vec<Edge>) -> Self {
         let mut adjacents = Vec::new();
         for _ in 0..nodes {
             adjacents.push(Vec::new());
         }
 
-        for (a, b) in edges {
-            adjacents[*a].push(*b);
-            adjacents[*b].push(*a);
+        for e in edges {
+            adjacents[e.left].push(Adjacent {
+                node: e.right,
+                distance: e.distance,
+            });
+            adjacents[e.right].push(Adjacent {
+                node: e.right,
+                distance: e.distance,
+            });
         }
 
         UndirectedGraph { adjacents }
     }
 
-    pub fn add(&mut self, edge: (usize, usize)) {
-        self.adjacents[edge.0].push(edge.1);
-        self.adjacents[edge.1].push(edge.0);
+    pub fn add(&mut self, edge: &Edge) {
+        self.adjacents[edge.left].push(Adjacent {
+            node: edge.right,
+            distance: edge.distance,
+        });
+        self.adjacents[edge.right].push(Adjacent {
+            node: edge.right,
+            distance: edge.distance,
+        });
     }
 }
