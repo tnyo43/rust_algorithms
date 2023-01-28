@@ -1,6 +1,6 @@
 use std::collections::BinaryHeap;
 
-use super::structs::UndirectedGraph;
+use super::structs::Graph;
 
 pub struct Dijkstra {
     pub distances: Vec<usize>,
@@ -11,7 +11,7 @@ impl Dijkstra {
     const INFINITY: usize = usize::MAX;
 }
 
-impl UndirectedGraph {
+impl<const DIRECTED: bool> Graph<DIRECTED> {
     pub fn dijkstra(self, start: usize) -> Dijkstra {
         let mut heap = BinaryHeap::new();
         let mut distances = vec![Dijkstra::INFINITY; self.adjacents.len()];
@@ -56,7 +56,7 @@ mod tests {
     speculate! {
         describe "Dijkstra" {
             #[rstest]
-            fn test_distance_caluculate() {
+            fn test_distance_caluculate_of_undirected_graph() {
                 let edges = vec![
                     Edge { left: 0, right: 1, distance: 7 },
                     Edge { left: 0, right: 2, distance: 4 },
@@ -66,12 +66,31 @@ mod tests {
                     Edge { left: 2, right: 4, distance: 6 },
                     Edge { left: 3, right: 4, distance: 5 },
                 ];
-                let graph = UndirectedGraph::new(5, &edges);
+                let graph = Graph::<false>::new(5, &edges);
 
                 let result = graph.dijkstra(0);
 
                 assert_eq!(result.distances, [0, 5, 4, 3, 7]);
                 assert_eq!(result.parents, [0, 2, 0, 0, 1]);
+            }
+
+            #[rstest]
+            fn test_distance_caluculate_of_directed_graph() {
+                let edges = vec![
+                    Edge { left: 0, right: 1, distance: 7 },
+                    Edge { left: 0, right: 2, distance: 4 },
+                    Edge { left: 0, right: 3, distance: 3 },
+                    Edge { left: 1, right: 2, distance: 1 },
+                    Edge { left: 1, right: 4, distance: 2 },
+                    Edge { left: 2, right: 4, distance: 6 },
+                    Edge { left: 3, right: 4, distance: 5 },
+                ];
+                let graph = Graph::<true>::new(5, &edges);
+
+                let result = graph.dijkstra(0);
+
+                assert_eq!(result.distances, [0, 7, 4, 3, 8]);
+                assert_eq!(result.parents, [0, 0, 0, 0, 3]);
             }
         }
     }

@@ -9,11 +9,14 @@ pub struct Adjacent {
     pub distance: usize,
 }
 
-pub struct UndirectedGraph {
+pub struct Graph<const DIRECTED: bool> {
     pub adjacents: Vec<Vec<Adjacent>>,
 }
 
-impl UndirectedGraph {
+pub type UndirectedGraph = Graph<false>;
+pub type DirectedGraph = Graph<true>;
+
+impl<const DIRECTED: bool> Graph<DIRECTED> {
     pub fn new(nodes: usize, edges: &Vec<Edge>) -> Self {
         let mut adjacents = Vec::new();
         for _ in 0..nodes {
@@ -25,13 +28,16 @@ impl UndirectedGraph {
                 node: e.right,
                 distance: e.distance,
             });
-            adjacents[e.right].push(Adjacent {
-                node: e.left,
-                distance: e.distance,
-            });
+
+            if !DIRECTED {
+                adjacents[e.right].push(Adjacent {
+                    node: e.left,
+                    distance: e.distance,
+                });
+            }
         }
 
-        UndirectedGraph { adjacents }
+        Graph { adjacents }
     }
 
     pub fn add(&mut self, edge: &Edge) {
@@ -39,9 +45,12 @@ impl UndirectedGraph {
             node: edge.right,
             distance: edge.distance,
         });
-        self.adjacents[edge.right].push(Adjacent {
-            node: edge.left,
-            distance: edge.distance,
-        });
+
+        if !DIRECTED {
+            self.adjacents[edge.right].push(Adjacent {
+                node: edge.left,
+                distance: edge.distance,
+            });
+        }
     }
 }
