@@ -1,27 +1,28 @@
-use std::collections::BinaryHeap;
+use std::{cmp::Reverse, collections::BinaryHeap};
 
-use super::structs::Graph;
+use crate::graph::structs::{Distance, Graph};
 
-pub struct Dijkstra {
-    pub distances: Vec<usize>,
+pub struct Dijkstra<D>
+where
+    D: Distance,
+{
+    pub distances: Vec<D>,
     pub parents: Vec<usize>,
 }
 
-impl Dijkstra {
-    const INFINITY: usize = usize::MAX;
-}
-
-impl<const DIRECTED: bool> Graph<DIRECTED> {
-    pub fn dijkstra(self, start: usize) -> Dijkstra {
+impl<const DIRECTED: bool, D> Graph<D, DIRECTED>
+where
+    D: Distance,
+{
+    pub fn dijkstra(self, start: usize) -> Dijkstra<D> {
         let mut heap = BinaryHeap::new();
-        let mut distances = vec![Dijkstra::INFINITY; self.adjacents.len()];
+        let mut distances = vec![D::infinity(); self.adjacents.len()];
         let mut parents = vec![usize::MAX; self.adjacents.len()];
 
-        heap.push((0 as i32, start, start));
+        heap.push(Reverse((D::zero(), start, start)));
 
         while !heap.is_empty() {
-            if let Some((distance_negative, from, to)) = heap.pop() {
-                let distance = distance_negative.abs() as usize;
+            if let Some(Reverse((distance, from, to))) = heap.pop() {
                 if distance >= distances[to] {
                     continue;
                 }
@@ -29,8 +30,7 @@ impl<const DIRECTED: bool> Graph<DIRECTED> {
                 parents[to] = from;
 
                 for adj in &self.adjacents[to] {
-                    // dbg!(-((distance + adj.distance) as i32), to, adj.node);
-                    heap.push((-((distance + adj.distance) as i32), to, adj.node));
+                    heap.push(Reverse((distance.add(adj.distance), to, adj.node)));
                 }
             } else {
                 panic!("heap is empty");
@@ -53,6 +53,22 @@ mod tests {
 
     use super::*;
 
+    type D = usize;
+
+    impl Distance for D {
+        fn zero() -> Self {
+            0
+        }
+
+        fn infinity() -> Self {
+            usize::MAX
+        }
+
+        fn add(&self, rhs: Self) -> Self {
+            self + rhs
+        }
+    }
+
     speculate! {
         describe "Dijkstra" {
             #[rstest]
@@ -66,7 +82,7 @@ mod tests {
                     Edge { left: 2, right: 4, distance: 6 },
                     Edge { left: 3, right: 4, distance: 5 },
                 ];
-                let graph = Graph::<false>::new(5, &edges);
+                let graph = Graph::<D, false>::new(5, &edges);
 
                 let result = graph.dijkstra(0);
 
@@ -85,7 +101,7 @@ mod tests {
                     Edge { left: 2, right: 4, distance: 6 },
                     Edge { left: 3, right: 4, distance: 5 },
                 ];
-                let graph = Graph::<true>::new(5, &edges);
+                let graph = Graph::<D, true>::new(5, &edges);
 
                 let result = graph.dijkstra(0);
 
