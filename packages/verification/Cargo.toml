@@ -33,6 +33,16 @@ path = "src/data_structure/union_find/main_01.rs"
 name = "verification_data_structure_union_find_02"
 path = "src/data_structure/union_find/main_02.rs"
 
+# graph/dijkstra
+
+[[bin]]
+name = "verification_graph_dijkstra_01"
+path = "src/graph/dijkstra/main_01.rs"
+
+[[bin]]
+name = "verification_graph_dijkstra_02"
+path = "src/graph/dijkstra/main_02.rs"
+
 # math/modint
 
 [[bin]]
