@@ -25,6 +25,7 @@ pub struct Graph<D, const DIRECTED: bool>
 where
     D: Distance,
 {
+    pub nodes: usize,
     pub adjacents: Vec<Vec<Adjacent<D>>>,
 }
 
@@ -52,7 +53,7 @@ where
             }
         }
 
-        Graph { adjacents }
+        Graph { nodes, adjacents }
     }
 
     pub fn add(&mut self, edge: &Edge<D>) {

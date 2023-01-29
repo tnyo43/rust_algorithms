@@ -16,8 +16,8 @@ where
 {
     pub fn dijkstra(self, start: usize) -> Dijkstra<D> {
         let mut heap = BinaryHeap::new();
-        let mut distances = vec![D::infinity(); self.adjacents.len()];
-        let mut parents = vec![usize::MAX; self.adjacents.len()];
+        let mut distances = vec![D::infinity(); self.nodes];
+        let mut parents = vec![usize::MAX; self.nodes];
 
         heap.push(Reverse((D::zero(), start, start)));
 
