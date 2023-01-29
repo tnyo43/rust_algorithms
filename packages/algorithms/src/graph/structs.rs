@@ -22,7 +22,7 @@ pub struct Graph<V, const DIRECTED: bool> {
 
 impl<D, const DIRECTED: bool> Graph<D, DIRECTED>
 where
-    D: Distance,
+    D: Clone + Copy,
 {
     pub fn new(nodes: usize, edges: &Vec<Edge<D>>) -> Self {
         let mut adjacents = Vec::new();
