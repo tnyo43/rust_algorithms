@@ -2,24 +2,24 @@ use std::{cmp::Reverse, collections::BinaryHeap};
 
 use crate::graph::structs::{Distance, Graph};
 
-pub struct Dijkstra<D>
+pub struct Dijkstra<Data>
 where
-    D: Distance,
+    Data: Distance,
 {
-    pub distances: Vec<D>,
+    pub distances: Vec<Data>,
     pub parents: Vec<usize>,
 }
 
-impl<const DIRECTED: bool, D> Graph<D, DIRECTED>
+impl<Data, const DIRECTED: bool> Graph<Data, DIRECTED>
 where
-    D: Distance,
+    Data: Distance,
 {
-    pub fn dijkstra(self, start: usize) -> Dijkstra<D> {
+    pub fn dijkstra(self, start: usize) -> Dijkstra<Data> {
         let mut heap = BinaryHeap::new();
-        let mut distances = vec![D::infinity(); self.nodes];
+        let mut distances = vec![Data::infinity(); self.nodes];
         let mut parents = vec![usize::MAX; self.nodes];
 
-        heap.push(Reverse((D::zero(), start, start)));
+        heap.push(Reverse((Data::zero(), start, start)));
 
         while !heap.is_empty() {
             if let Some(Reverse((distance, from, to))) = heap.pop() {
@@ -30,7 +30,7 @@ where
                 parents[to] = from;
 
                 for adj in &self.adjacents[to] {
-                    heap.push(Reverse((distance.add(adj.distance), to, adj.node)));
+                    heap.push(Reverse((distance.add(adj.data), to, adj.node)));
                 }
             } else {
                 panic!("heap is empty");
@@ -74,13 +74,13 @@ mod tests {
             #[rstest]
             fn test_distance_caluculate_of_undirected_graph() {
                 let edges = vec![
-                    Edge { left: 0, right: 1, distance: 7 },
-                    Edge { left: 0, right: 2, distance: 4 },
-                    Edge { left: 0, right: 3, distance: 3 },
-                    Edge { left: 1, right: 2, distance: 1 },
-                    Edge { left: 1, right: 4, distance: 2 },
-                    Edge { left: 2, right: 4, distance: 6 },
-                    Edge { left: 3, right: 4, distance: 5 },
+                    Edge { left: 0, right: 1, data: 7 },
+                    Edge { left: 0, right: 2, data: 4 },
+                    Edge { left: 0, right: 3, data: 3 },
+                    Edge { left: 1, right: 2, data: 1 },
+                    Edge { left: 1, right: 4, data: 2 },
+                    Edge { left: 2, right: 4, data: 6 },
+                    Edge { left: 3, right: 4, data: 5 },
                 ];
                 let graph = Graph::<D, false>::new(5, &edges);
 
@@ -93,13 +93,13 @@ mod tests {
             #[rstest]
             fn test_distance_caluculate_of_directed_graph() {
                 let edges = vec![
-                    Edge { left: 0, right: 1, distance: 7 },
-                    Edge { left: 0, right: 2, distance: 4 },
-                    Edge { left: 0, right: 3, distance: 3 },
-                    Edge { left: 1, right: 2, distance: 1 },
-                    Edge { left: 1, right: 4, distance: 2 },
-                    Edge { left: 2, right: 4, distance: 6 },
-                    Edge { left: 3, right: 4, distance: 5 },
+                    Edge { left: 0, right: 1, data: 7 },
+                    Edge { left: 0, right: 2, data: 4 },
+                    Edge { left: 0, right: 3, data: 3 },
+                    Edge { left: 1, right: 2, data: 1 },
+                    Edge { left: 1, right: 4, data: 2 },
+                    Edge { left: 2, right: 4, data: 6 },
+                    Edge { left: 3, right: 4, data: 5 },
                 ];
                 let graph = Graph::<D, true>::new(5, &edges);
 

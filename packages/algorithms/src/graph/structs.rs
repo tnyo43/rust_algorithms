@@ -4,29 +4,20 @@ pub trait Distance: Ord + Copy + Clone {
     fn add(&self, rhs: Self) -> Self;
 }
 
-pub struct Edge<D>
-where
-    D: Distance,
-{
+pub struct Edge<Data> {
     pub left: usize,
     pub right: usize,
-    pub distance: D,
+    pub data: Data,
 }
 
-pub struct Adjacent<D>
-where
-    D: Distance,
-{
+pub struct Adjacent<Data> {
     pub node: usize,
-    pub distance: D,
+    pub data: Data,
 }
 
-pub struct Graph<D, const DIRECTED: bool>
-where
-    D: Distance,
-{
+pub struct Graph<V, const DIRECTED: bool> {
     pub nodes: usize,
-    pub adjacents: Vec<Vec<Adjacent<D>>>,
+    pub adjacents: Vec<Vec<Adjacent<V>>>,
 }
 
 impl<D, const DIRECTED: bool> Graph<D, DIRECTED>
@@ -42,13 +33,13 @@ where
         for e in edges {
             adjacents[e.left].push(Adjacent {
                 node: e.right,
-                distance: e.distance,
+                data: e.data,
             });
 
             if !DIRECTED {
                 adjacents[e.right].push(Adjacent {
                     node: e.left,
-                    distance: e.distance,
+                    data: e.data,
                 });
             }
         }
@@ -59,13 +50,13 @@ where
     pub fn add(&mut self, edge: &Edge<D>) {
         self.adjacents[edge.left].push(Adjacent {
             node: edge.right,
-            distance: edge.distance,
+            data: edge.data,
         });
 
         if !DIRECTED {
             self.adjacents[edge.right].push(Adjacent {
                 node: edge.left,
-                distance: edge.distance,
+                data: edge.data,
             });
         }
     }
