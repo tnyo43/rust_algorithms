@@ -43,6 +43,16 @@ path = "src/graph/dijkstra/main_01.rs"
 name = "verification_graph_dijkstra_02"
 path = "src/graph/dijkstra/main_02.rs"
 
+# graph/floyd_warshall
+
+[[bin]]
+name = "verification_graph_floyd_warshall_01"
+path = "src/graph/floyd_warshall/main_01.rs"
+
+[[bin]]
+name = "verification_graph_floyd_warshall_02"
+path = "src/graph/floyd_warshall/main_02.rs"
+
 # math/modint
 
 [[bin]]
