@@ -1,23 +1,23 @@
 use crate::graph::structs::{Distance, Graph};
 
-pub struct FloydWarshall<D>
+pub struct FloydWarshall<Data>
 where
-    D: Distance,
+    Data: Distance,
 {
-    pub distances: Vec<Vec<D>>,
+    pub distances: Vec<Vec<Data>>,
 }
 
-impl<D, const DIRECTED: bool> Graph<D, DIRECTED>
+impl<Data, const DIRECTED: bool> Graph<Data, DIRECTED>
 where
-    D: Distance,
+    Data: Distance,
 {
-    pub fn floyd_warshall(self) -> FloydWarshall<D> {
-        let mut distances = vec![vec![D::infinity(); self.nodes]; self.nodes];
+    pub fn floyd_warshall(self) -> FloydWarshall<Data> {
+        let mut distances = vec![vec![Data::infinity(); self.nodes]; self.nodes];
         for node in 0..self.nodes {
-            distances[node][node] = D::zero();
+            distances[node][node] = Data::zero();
 
             for adj in &self.adjacents[node] {
-                distances[node][adj.node] = adj.distance;
+                distances[node][adj.node] = adj.data;
             }
         }
 

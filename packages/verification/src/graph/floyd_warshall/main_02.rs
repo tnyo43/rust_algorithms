@@ -5,24 +5,30 @@ use algorithms::graph::structs::{Distance, Edge, Graph};
 use proconio::input;
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Clone, Copy, Debug)]
-struct D(usize);
+struct Data {
+    distance: usize,
+}
 
-impl Distance for D {
+impl Distance for Data {
     fn zero() -> Self {
-        D(0)
+        Data { distance: 0 }
     }
 
     fn infinity() -> Self {
-        D(usize::MAX >> 2)
+        Data {
+            distance: usize::MAX >> 2,
+        }
     }
 
     fn add(&self, rhs: Self) -> Self {
-        D(self.0 + rhs.0)
+        Data {
+            distance: self.distance + rhs.distance,
+        }
     }
 }
 
 fn check(v: &Vec<(i64, i64, u64)>, s: u64) -> bool {
-    let mut g = Graph::<D, true>::new(v.len(), &vec![]);
+    let mut g = Graph::<Data, true>::new(v.len(), &vec![]);
     for i in 0..v.len() {
         for j in 0..v.len() {
             let x = (v[i].0 - v[j].0).abs();
@@ -31,7 +37,7 @@ fn check(v: &Vec<(i64, i64, u64)>, s: u64) -> bool {
                 g.add(&Edge {
                     left: i,
                     right: j,
-                    distance: D(0),
+                    data: Data::zero(),
                 });
             }
         }
@@ -42,7 +48,7 @@ fn check(v: &Vec<(i64, i64, u64)>, s: u64) -> bool {
     for i in 0..v.len() {
         let mut tmp = true;
         for j in 0..v.len() {
-            if result.distances[i][j] == D::infinity() {
+            if result.distances[i][j] == Data::infinity() {
                 tmp = false;
                 break;
             }

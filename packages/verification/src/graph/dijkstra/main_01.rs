@@ -5,37 +5,43 @@ use algorithms::graph::structs::{Distance, Edge, Graph};
 use proconio::input;
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
-struct D(usize);
+struct Data {
+    distance: usize,
+}
 
-impl Distance for D {
+impl Distance for Data {
     fn zero() -> Self {
-        Self(0)
+        Data { distance: 0 }
     }
 
     fn infinity() -> Self {
-        Self(usize::MAX)
+        Data {
+            distance: usize::MAX,
+        }
     }
 
     fn add(&self, rhs: Self) -> Self {
-        Self(self.0 + rhs.0)
+        Data {
+            distance: self.distance + rhs.distance,
+        }
     }
 }
 
 fn main() {
     input! { n: usize, m: usize };
-    let mut graph = Graph::<D, false>::new(n, &vec![]);
+    let mut graph = Graph::<Data, false>::new(n, &vec![]);
 
     for _ in 0..m {
         input! { a: usize, b: usize };
         graph.add(&Edge {
             left: a - 1,
             right: b - 1,
-            distance: D(1),
+            data: Data { distance: 1 },
         });
     }
 
     let result = graph.dijkstra(0);
-    if result.distances[n - 1].0 == 2 {
+    if result.distances[n - 1].distance == 2 {
         println!("POSSIBLE");
     } else {
         println!("IMPOSSIBLE");

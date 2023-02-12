@@ -5,33 +5,39 @@ use algorithms::graph::structs::{Distance, Edge, Graph};
 use proconio::input;
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
-struct D(usize);
+struct Data {
+    distance: usize,
+}
 
-impl Distance for D {
+impl Distance for Data {
     fn zero() -> Self {
-        D(0)
+        Data { distance: 0 }
     }
 
     fn infinity() -> Self {
-        D(usize::MAX)
+        Data {
+            distance: usize::MAX,
+        }
     }
 
     fn add(&self, rhs: Self) -> Self {
-        D(self.0 + rhs.0)
+        Data {
+            distance: self.distance + rhs.distance,
+        }
     }
 }
 
 fn main() {
     input! { h: usize, w: usize };
 
-    let mut graph = Graph::<D, true>::new(10, &Vec::new());
+    let mut graph = Graph::<Data, true>::new(10, &Vec::new());
     for i in 0..=9 {
         for j in 0..=9 {
             input! { c: usize };
-            graph.add(&Edge::<D> {
+            graph.add(&Edge::<Data> {
                 left: i,
                 right: j,
-                distance: D(c),
+                data: Data { distance: c },
             })
         }
     }
@@ -44,7 +50,7 @@ fn main() {
         if a == -1 {
             continue;
         }
-        ans += result.distances[a as usize][1].0;
+        ans += result.distances[a as usize][1].distance;
     }
 
     println!("{}", ans);
