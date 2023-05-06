@@ -1,15 +1,15 @@
 use std::ops;
 
 #[derive(Clone, Copy)]
-pub struct Vector2<Data>(Data, Data);
+pub struct Point2<Data>(Data, Data);
 
-impl<Data> Vector2<Data> {
+impl<Data> Point2<Data> {
     pub fn new(x: Data, y: Data) -> Self {
         Self(x, y)
     }
 }
 
-impl<Data> ops::Add for Vector2<Data>
+impl<Data> ops::Add for Point2<Data>
 where
     Data: ops::Add<Output = Data>,
 {
@@ -20,7 +20,7 @@ where
     }
 }
 
-impl<Data> ops::AddAssign for Vector2<Data>
+impl<Data> ops::AddAssign for Point2<Data>
 where
     Data: ops::Add<Output = Data> + Copy,
 {
@@ -29,7 +29,7 @@ where
     }
 }
 
-impl<Data> ops::Sub for Vector2<Data>
+impl<Data> ops::Sub for Point2<Data>
 where
     Data: ops::Sub<Output = Data>,
 {
@@ -40,7 +40,7 @@ where
     }
 }
 
-impl<Data> ops::SubAssign for Vector2<Data>
+impl<Data> ops::SubAssign for Point2<Data>
 where
     Data: ops::Sub<Output = Data> + Copy,
 {
@@ -49,7 +49,7 @@ where
     }
 }
 
-impl<Data> ops::Mul<Data> for Vector2<Data>
+impl<Data> ops::Mul<Data> for Point2<Data>
 where
     Data: ops::Mul<Output = Data> + Copy,
 {
@@ -60,7 +60,7 @@ where
     }
 }
 
-impl<Data> ops::MulAssign<Data> for Vector2<Data>
+impl<Data> ops::MulAssign<Data> for Point2<Data>
 where
     Data: ops::Mul<Output = Data> + Copy,
 {
@@ -69,7 +69,7 @@ where
     }
 }
 
-impl<Data> Vector2<Data>
+impl<Data> Point2<Data>
 where
     Data: ops::Sub<Output = Data> + ops::Mul<Output = Data>,
 {
