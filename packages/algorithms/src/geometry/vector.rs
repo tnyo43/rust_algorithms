@@ -68,3 +68,12 @@ where
         *self = *self * rhs
     }
 }
+
+impl<Data> Vector2<Data>
+where
+    Data: ops::Sub<Output = Data> + ops::Mul<Output = Data>,
+{
+    pub fn det(self, rhs: Self) -> Data {
+        self.0 * rhs.1 - self.1 * rhs.0
+    }
+}
