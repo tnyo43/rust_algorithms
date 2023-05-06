@@ -63,6 +63,16 @@ path = "src/graph/fork_fulkerson/main_01.rs"
 name = "verification_graph_fork_fulkerson_02"
 path = "src/graph/fork_fulkerson/main_02.rs"
 
+# graph/strongly_connected_component
+
+[[bin]]
+name = "verification_graph_strongly_connected_component_01"
+path = "src/graph/strongly_connected_component/main_01.rs"
+
+[[bin]]
+name = "verification_graph_strongly_connected_component_02"
+path = "src/graph/strongly_connected_component/main_02.rs"
+
 # math/modint
 
 [[bin]]
