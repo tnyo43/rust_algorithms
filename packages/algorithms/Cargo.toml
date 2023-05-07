@@ -9,3 +9,6 @@ edition = "2021"
 itertool = "0.1.0"
 rstest = "0.16.0"
 speculate = "0.1.2"
+
+[dependencies]
+num-traits = "0.2.15"
