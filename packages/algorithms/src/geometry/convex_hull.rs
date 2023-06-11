@@ -3,11 +3,11 @@
 use crate::geometry::point2::Point2;
 use num_traits::Num;
 
-pub trait ConvecHull<Data: Num> {
+pub trait ConvexHull<Data: Num> {
     fn convex_hull(self) -> Vec<(usize, Point2<Data>)>;
 }
 
-impl<Data: Num> ConvecHull<Data> for Vec<Point2<Data>>
+impl<Data: Num> ConvexHull<Data> for Vec<Point2<Data>>
 where
     Data: Clone + Copy + PartialOrd + Ord,
 {
