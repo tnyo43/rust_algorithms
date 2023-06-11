@@ -1,9 +1,18 @@
-use std::ops;
+use std::{fmt::Display, ops};
 
 use num_traits::{Num, ToPrimitive};
 
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, Copy, PartialEq, Eq)]
 pub struct Point2<Data: Num>(pub Data, pub Data);
+
+impl<Data> Display for Point2<Data>
+where
+    Data: Num + Display,
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "({}, {})", self.0, self.1)
+    }
+}
 
 impl<Data: Num> Point2<Data> {
     pub fn new(x: Data, y: Data) -> Self {
