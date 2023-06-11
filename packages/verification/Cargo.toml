@@ -33,6 +33,16 @@ path = "src/data_structure/union_find/main_01.rs"
 name = "verification_data_structure_union_find_02"
 path = "src/data_structure/union_find/main_02.rs"
 
+# geometry/convex_hull
+
+[[bin]]
+name = "verification_geometry_convex_hull_01"
+path = "src/geometry/convex_hull/main_01.rs"
+
+[[bin]]
+name = "verification_geometry_convex_hull_02"
+path = "src/geometry/convex_hull/main_02.rs"
+
 # graph/dijkstra
 
 [[bin]]
