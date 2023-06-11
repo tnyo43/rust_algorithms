@@ -1,6 +1,6 @@
 use std::ops;
 
-use num_traits::Num;
+use num_traits::{Num, ToPrimitive};
 
 #[derive(Clone, Copy, PartialEq)]
 pub struct Point2<Data: Num>(pub Data, pub Data);
@@ -50,6 +50,18 @@ impl<Data: Num + Copy> ops::Mul<Data> for Point2<Data> {
 impl<Data: Num + Copy> ops::MulAssign<Data> for Point2<Data> {
     fn mul_assign(&mut self, rhs: Data) {
         *self = *self * rhs
+    }
+}
+
+impl<Data: Num + ToPrimitive> Point2<Data> {
+    pub fn distance(self, rhs: Self) -> f64 {
+        ((self.0 - rhs.0).to_f64().unwrap().powf(2.0)
+            + (self.1 - rhs.1).to_f64().unwrap().powf(2.0))
+        .sqrt()
+    }
+
+    pub fn arg(self) -> f64 {
+        self.1.to_f64().unwrap().atan2(self.0.to_f64().unwrap())
     }
 }
 
